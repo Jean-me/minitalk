@@ -1,15 +1,23 @@
-#define _GNU_SOURCE
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mesasaki <mesasaki@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 19:06:27 by mesasaki          #+#    #+#             */
+/*   Updated: 2025/05/08 20:54:47 by mesasaki         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minitalk.h"
 
 int		g_ack_received;
 
 void	ack_handler(int signum)
 {
 	if (signum == SIGUSR1)
-		write(1, ".", 1);
+		write(1, "Successfully received\n", 23);
 	g_ack_received = 1;
 }
 
@@ -23,7 +31,6 @@ void	send_bit(pid_t pid, int bit)
 	while (!g_ack_received)
 		usleep(100);
 	g_ack_received = 0;
-	// pause(); // ACKまち
 }
 
 void	send_char(pid_t pid, char c)
@@ -35,13 +42,8 @@ void	send_char(pid_t pid, char c)
 	{
 		if ((c >> i) & 1)
 			send_bit(pid, SIGUSR2);
-		// kill(pid, SIGUSR2);
 		else
 			send_bit(pid, SIGUSR1);
-		// kill(pid, SIGUSR1);
-		// while (!g_ack_received)
-		// 	usleep(100);
-		// g_ack_received = 0;
 		i--;
 	}
 }
@@ -58,20 +60,19 @@ void	send_string(pid_t pid, const char *str)
 
 int	main(int argc, char **argv)
 {
-	pid_t server_pid;
-	struct sigaction sa;
+	pid_t				server_pid;
+	struct sigaction	sa;
 
 	if (argc != 3)
 	{
-		printf("使い方: %s [受信者のPID] [送る文字列]\n", argv[0]);
+		ft_printf("使い方: %s [受信者のPID] [送る文字列]\n", argv[0]);
 		return (1);
 	}
 	sa.sa_handler = ack_handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGUSR1, &sa, NULL);
-	server_pid = (pid_t)atoi(argv[1]); //手動で入れた受信者のPID
-	send_string(server_pid, argv[2]);  //文字をサーバーPIDを指定して送る
-
+	server_pid = (pid_t)atoi(argv[1]);
+	send_string(server_pid, argv[2]);
 	return (0);
 }

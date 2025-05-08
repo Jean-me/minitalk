@@ -1,19 +1,24 @@
-#define _GNU_SOURCE
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mesasaki <mesasaki@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 19:06:18 by mesasaki          #+#    #+#             */
+/*   Updated: 2025/05/08 21:02:56 by mesasaki         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-typedef struct s_state
-{
-	int		bit;
-	char	c;
-}			t_state;
+#include "minitalk.h"
+#include "ft_printf/ft_printf.h"
+
+t_state	state;
 
 void	handle_signal(int signum, siginfo_t *info, void *context)
-// state.bitが8になるまで9かい繰り返し
 {
-	static t_state state;
+	pid_t			client_pid;
+
 	(void)context;
 	if (signum == SIGUSR2)
 		state.c |= (1 << (7 - state.bit));
@@ -27,23 +32,20 @@ void	handle_signal(int signum, siginfo_t *info, void *context)
 		state.bit = 0;
 		state.c = 0;
 	}
-	pid_t client_pid = info->si_pid;
+	client_pid = info->si_pid;
 	kill(client_pid, SIGUSR1);
 }
 
 int	main(void)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	sa.sa_sigaction = handle_signal;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO;
-
-	printf("受信プロセス PID: %d\n", getpid());
-
+	ft_printf("受信プロセス PID: %d\n", getpid());
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
-
 	while (1)
 		pause();
 	return (0);
