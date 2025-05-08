@@ -6,7 +6,7 @@
 /*   By: mesasaki <mesasaki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 19:06:18 by mesasaki          #+#    #+#             */
-/*   Updated: 2025/05/08 21:02:56 by mesasaki         ###   ########.fr       */
+/*   Updated: 2025/05/08 21:18:16 by mesasaki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ int	main(void)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO;
 	ft_printf("受信プロセス PID: %d\n", getpid());
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
+	if(sigaction(SIGUSR1, &sa, NULL) < 0 || sigaction(SIGUSR2, &sa, NULL) < 0)
+		return (1);
 	while (1)
 		pause();
 	return (0);

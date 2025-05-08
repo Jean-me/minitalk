@@ -6,7 +6,7 @@
 /*   By: mesasaki <mesasaki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 19:09:49 by mesasaki          #+#    #+#             */
-/*   Updated: 2025/05/08 20:41:58 by mesasaki         ###   ########.fr       */
+/*   Updated: 2025/05/08 21:28:30 by mesasaki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-#include "ft_printf/ft_printf.h"
+# include "ft_printf/ft_printf.h"
+# include <limits.h>
 
 typedef struct s_state
 {
@@ -31,4 +32,5 @@ void	ack_handler(int signum);
 void	send_bit(pid_t pid, int bit);
 void	send_char(pid_t pid, char c);
 void	send_string(pid_t pid, const char *str);
+int		ft_atoi(const char *string);
 #endif

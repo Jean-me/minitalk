@@ -6,7 +6,7 @@
 /*   By: mesasaki <mesasaki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 19:06:27 by mesasaki          #+#    #+#             */
-/*   Updated: 2025/05/08 20:54:47 by mesasaki         ###   ########.fr       */
+/*   Updated: 2025/05/08 21:21:45 by mesasaki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	main(int argc, char **argv)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGUSR1, &sa, NULL);
-	server_pid = (pid_t)atoi(argv[1]);
+	server_pid = (pid_t)ft_atoi(argv[1]);
 	send_string(server_pid, argv[2]);
 	return (0);
 }

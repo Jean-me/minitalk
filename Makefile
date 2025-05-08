@@ -2,7 +2,7 @@
 CLIENT = client
 SERVER = server
 # SRC
-CLIENT_SRC = client.c
+CLIENT_SRC = client.c ft_atoi.c
 SERVER_SRC = server.c
 # Compiler
 CC = cc
