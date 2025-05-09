@@ -6,14 +6,14 @@
 /*   By: mesasaki <mesasaki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 19:06:18 by mesasaki          #+#    #+#             */
-/*   Updated: 2025/05/08 21:18:16 by mesasaki         ###   ########.fr       */
+/*   Updated: 2025/05/09 21:52:31 by mesasaki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 #include "ft_printf/ft_printf.h"
 
-t_state	state;
+t_state	g_state;
 
 void	handle_signal(int signum, siginfo_t *info, void *context)
 {
@@ -21,16 +21,16 @@ void	handle_signal(int signum, siginfo_t *info, void *context)
 
 	(void)context;
 	if (signum == SIGUSR2)
-		state.c |= (1 << (7 - state.bit));
-	state.bit++;
-	if (state.bit == 8)
+		g_state.c |= (1 << (7 - g_state.bit));
+	g_state.bit++;
+	if (g_state.bit == 8)
 	{
-		if (state.c == '\0')
+		if (g_state.c == '\0')
 			write(1, "\n", 1);
 		else
-			write(1, &state.c, 1);
-		state.bit = 0;
-		state.c = 0;
+			write(1, &g_state.c, 1);
+		g_state.bit = 0;
+		g_state.c = 0;
 	}
 	client_pid = info->si_pid;
 	kill(client_pid, SIGUSR1);
@@ -44,7 +44,7 @@ int	main(void)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO;
 	ft_printf("受信プロセス PID: %d\n", getpid());
-	if(sigaction(SIGUSR1, &sa, NULL) < 0 || sigaction(SIGUSR2, &sa, NULL) < 0)
+	if (sigaction(SIGUSR1, &sa, NULL) < 0 || sigaction(SIGUSR2, &sa, NULL) < 0)
 		return (1);
 	while (1)
 		pause();
